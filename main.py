@@ -44,10 +44,21 @@ def main():
         if ort_outputs is not None:
             x_axis = [float(prob) for prob in softmax(ort_outputs)[0][0]]
             y_axis = [labels[key] for key in labels]
-            plt.figure(figsize=(2, 1))
-            plt.barh(y_axis, x_axis)
 
-            st.pyplot(plt.gcf())
+            fig, ax = plt.subplots(figsize=(8, 4))
+            colors = plt.cm.Greens(x_axis)
+            ax.barh(y_axis, x_axis, color=colors)
+
+            # Добавляем значения вероятностей
+            for i, prob in enumerate(x_axis):
+                ax.text(prob, i, f"{prob:.3f}", va='center')
+
+            ax.set_yticks(y_axis)
+            ax.set_xlabel("Probability")
+            ax.set_title("Class Probabilities")
+
+            # Отображаем график в Streamlit
+            st.pyplot(fig)
             st.markdown(f"### Predicted label: {labels[str(ort_outputs[0].argmax(axis=-1)[0])]}")
 
 
